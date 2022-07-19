@@ -1,0 +1,15 @@
+CHODZI O RYSOWANIE KWADRATU.
+
+JAK JEST 10 to rysuje na pozycji do 480, co jest pozycją końcową. Nie można tak zrobić, bo się rysuje po za
+obręczą. Należy od możliwości poruszania się odjąć te 10 px, które są wielkością rysowanych kwadratów.
+
+/*
+    TODO Wygenerwoać kształty z przeszkód
+    TODO poprawić aby przeszkody nie pojawiały się przed snakiem na początku rozgrywki
+    TODO naprawić, aby przeszkody nie zrespiły się na poincie (można po prostu najpier respić przeszkody
+    TODO MENU
+    TODO Tablica wyników
+    TODO różne wielkości plansz
+    TODO AI - wąż goniący snake'a
+    TODO Ogarnąć dokumentacje i opisy klas
+ */

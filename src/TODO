@@ -1,0 +1,14 @@
+/*
+    TODO Wygenerwoać kształty z przeszkód
+    TODO poprawić aby przeszkody nie pojawiały się przed snakiem na początku rozgrywki
+    TODO naprawić, aby przeszkody nie zrespiły się na poincie (można po prostu najpier respić przeszkody
+    TODO różne wielkości plansz
+    TODO AI - wąż goniący snake'a
+    TODO Ogarnąć dokumentacje i opisy klas
+    TODO Uporządkować kod w nowych klasach - DataBase, ScoreTable, PlayerName
+    TODO Uporządkować kod w klasie GAME
+
+    DONE:
+    Tablica wyników     -  DONE
+    MENU    -   DONE
+ */
