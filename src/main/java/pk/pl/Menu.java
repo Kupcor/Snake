@@ -9,7 +9,6 @@ public class Menu extends Window implements MouseListener {
     JButton playButton = new JButton();
     JButton statisticButton = new JButton();
     JButton exitButton = new JButton();
-    JButton gameSettings = new JButton();
 
     public Menu() throws InterruptedException {
         super();

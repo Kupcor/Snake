@@ -5,8 +5,6 @@ package pk.pl;
  *  javax.awt.Color - provide ability to define color and assigned them to background of the labels and window
  */
 import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,13 +41,5 @@ public class Window extends JFrame{
                             dim.height/2-this.getSize().height/2 - this.height/2);
 
         this.setVisible(true);                                          //  Make changes visible
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 }

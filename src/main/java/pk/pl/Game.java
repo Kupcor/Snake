@@ -1,15 +1,12 @@
 package pk.pl;
 
 /*  Imported libraries / classes */
-//  TODO describe additional directories
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import static java.lang.Math.abs;
+import pk.structures.ReadStructure;
 
 /*  Game class - main class for the Snake game project
 *   It is child class and inherits from the Window Klass
@@ -18,16 +15,16 @@ import static java.lang.Math.abs;
 */
 public class Game extends Window implements KeyListener {
 
-    private final ArrayList<Snake> snakeParts = new ArrayList<Snake>();         //   Array List to contain Snake objects
-    private final ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();       //   Array List to contain Obstacle objects
+    private final ArrayList<Snake> snakeParts = new ArrayList<>();          //   Array List to contain Snake objects
+    private final ArrayList<Obstacle> obstacles = new ArrayList<>();        //   Array List to contain Obstacle objects
     private final Snake snake;                                              //   Sanke object
     private final Point point;                                              //   Point object
     private final ScorePanel infoPanel;                                     //   infoPanel panel
     private final GamePanel gamePanel;                                      //   gamePanel panel
-    public String playerName;                                     //   Player name
+    public String playerName;                                               //   Player name
 
     // Constructor for Game class
-    public Game(String playerName) throws InterruptedException {
+    public Game(String playerName, String mapName) throws InterruptedException, FileNotFoundException {
         super();                                                                //  Call parent class constructor
         this.addKeyListener(this);                                            //  Add key listener to window
         this.playerName = playerName;
@@ -36,7 +33,7 @@ public class Game extends Window implements KeyListener {
         gamePanel = new GamePanel (0, 20, this.width, this.height - 20);    //  GamePanel definition
 
         this.createFrame();                                                             //  Create obstacle frame
-        this.createObstacleStructure(gamePanel.getWidth(),gamePanel.getHeight());
+        this.createObstacleStructure(mapName);
 
         //  Create snake object (snake "head"). Starting position is set on the middle of the game area
         //  Starting position should be rounded to the full value (snake size)
@@ -77,7 +74,6 @@ public class Game extends Window implements KeyListener {
         }
     }
 
-    //  TODO describe timer
     //  Method snakeMoves() is main method is Game Class. It is responsible for infinite snake moves.
     //  Main loop of the application
     //  It contains method:
@@ -85,31 +81,28 @@ public class Game extends Window implements KeyListener {
     //      snakePosoitionActualization
     //      snakeMovement from Snake class
     //      lostGame
-    private void snakeMoves() throws InterruptedException {
-        Timer timer = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (point.getX() == snake.getX() && point.getY() == snake.getY()) {     //  Check if player get a point
-                    addPoint();                                                    //  If yes add point
+    private void snakeMoves() {
+        Timer timer = new Timer(30, e -> {
+            if (point.getX() == snake.getX() && point.getY() == snake.getY()) {     //  Check if player get a point
+                addPoint();                                                    //  If yes add point
+            }
+
+            snakePositionActualization();                                      //  Snake objects position actualization
+            snake.snakeMovement(gamePanel.getWidth(), gamePanel.getHeight());       //  Move snake head
+
+            if(lostGame()) {   //  Check if player has not lost
+                DataBase dataBase = new DataBase();
+                try {
+                    dataBase.saveData(playerName, infoPanel.getScore());
+                } catch (SQLException ex) {
+                    System.err.println(ex.getMessage());
                 }
-
-                snakePositionActualization();                                      //  Snake objects position actualization
-                snake.snakeMovement(gamePanel.getWidth(), gamePanel.getHeight());       //  Move snake head
-
-                if(lostGame()) {   //  Check if player has not lost
-                    DataBase dataBase = new DataBase();
-                    try {
-                        dataBase.saveData(playerName, infoPanel.getScore());
-                    } catch (SQLException ex) {
-                        System.err.println(ex.getMessage());
-                    }
-                    dispose();
-                    ((Timer)e.getSource()).stop();
-                    try {
-                        Menu menu = new Menu();
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+                dispose();
+                ((Timer)e.getSource()).stop();
+                try {
+                    Menu menu = new Menu();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -152,42 +145,56 @@ public class Game extends Window implements KeyListener {
         int frameBrake = gamePanel.getWidth() / 50;
 
         for (int i = 0; i < gamePanel.getHeight(); i = i + 10) {
-            if (i > gamePanel.getHeight() / 2 - frameBrake*10 && i < gamePanel.getHeight() / 2 + frameBrake*10) { continue; };
+            if (i > gamePanel.getHeight() / 2 - frameBrake*10 && i < gamePanel.getHeight() / 2 + frameBrake*10) { continue; }
             this.addObstacle(0, i);
             this.addObstacle(gamePanel.getWidth() - 10, i);
         }
 
         for (int i = 0; i < gamePanel.getWidth(); i = i + 10) {
-            if (i > gamePanel.getWidth() / 2 - frameBrake*10 && i < gamePanel.getWidth()/2 + frameBrake*10) { continue; };
+            if (i > gamePanel.getWidth() / 2 - frameBrake*10 && i < gamePanel.getWidth()/2 + frameBrake*10) { continue; }
             this.addObstacle(i, gamePanel.getHeight() - 10);
             this.addObstacle(i, 0);
         }
     }
 
     //  Method createObstacleStructure creates an additional, symetrical, piramidal shapes obstacles structures
-    //  TODO add possibility to load structures from file
-    //  TODO add diffrent shapes of obstacles structures
-    private void createObstacleStructure(int width, int height) {
-        Random random = new Random();
-        int randomXPosition = random.nextInt(1, ((width / 10) - 1) / 2) * 10;
-        int randomYPosition = random.nextInt(1, ((height / 10) - 1) / 2) * 10;
-
-        for (int i = 0; i<= gamePanel.height/75; i += 1) {
-            if (i%2 != 0) { continue;}
-            randomYPosition += 10;
-
-            for (int j = 0; j <= i; j++) {
-                int xAxis = abs((gamePanel.getWidth() / 2) - randomXPosition);
-                int yAxis = abs((gamePanel.getHeight() / 2) - randomYPosition);
-
-                this.addObstacle(randomXPosition, randomYPosition);
-                this.addObstacle(randomXPosition + 2 * xAxis - 10, randomYPosition);
-                this.addObstacle(randomXPosition, randomYPosition + 2 * yAxis);
-                this.addObstacle(randomXPosition + 2 * xAxis - 10, randomYPosition + 2 * yAxis);
-                randomXPosition += 10;
+    private void createObstacleStructure(String mapName) throws FileNotFoundException {
+        switch (mapName) {
+            case "Egipt map": {
+                this.loadStructure("src\\main\\java\\pk\\structures\\piramids.txt",100 , 100);
+                break;
             }
+            case "Lakes map": {
+                this.loadStructure("src\\main\\java\\pk\\structures\\cubes.txt",100 , 100);
+                break;
+            }
+            case "Blocks map": {
+                this.loadStructure("src\\main\\java\\pk\\structures\\squares.txt",100 , 100);
+                break;
+            }
+            case "Simple map": {
+                this.loadStructure("src\\main\\java\\pk\\structures\\clear.txt",100 , 100);
+                break;
+            }
+            case "Labyrinth map": {
+                this.loadStructure("src\\main\\java\\pk\\structures\\labirynth.txt",100 , 100);
+                break;
+            }
+        }
+    }
 
-            randomXPosition -= 10*(i+2);
+    private void loadStructure(String filePath, int xStructurePosition, int yStructurePosition) throws FileNotFoundException {
+        ReadStructure readStructure = new ReadStructure(filePath);
+        int xStartStructurePosition = xStructurePosition;
+        for (int i = 0; i < readStructure.getVerticalLength(); i += 1) {
+            for (int j = 0; j < readStructure.getHorizontalLength(); j += 1) {
+                if(readStructure.getStructurePartStatus(i, j)) {
+                    this.addObstacle(xStructurePosition, yStructurePosition);
+                }
+                xStructurePosition += 10;
+            }
+            yStructurePosition += 10;
+            xStructurePosition = xStartStructurePosition;
         }
     }
 

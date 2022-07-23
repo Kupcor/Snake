@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ScoreTable extends Window implements MouseListener {
     JButton exitButton = new JButton("Exit");
     JButton backToMenuButton = new JButton("Back to menu");
-    ArrayList<ArrayList<Object>> resultsArrayList = new ArrayList<>();
+    ArrayList<ArrayList<Object>> resultsArrayList;
 
 
     public ScoreTable(ArrayList<ArrayList<Object>> results) {
@@ -27,8 +27,8 @@ public class ScoreTable extends Window implements MouseListener {
 
         for (int iterator = 0; iterator < this.resultsArrayList.size(); iterator++) {
             if (iterator > 10) { break;}
-            mainPanel.add(new JLabel(String.valueOf(this.resultsArrayList.get(iterator).get(0))), CENTER_ALIGNMENT);
-            mainPanel.add(new JLabel(String.valueOf(this.resultsArrayList.get(iterator).get(1))), CENTER_ALIGNMENT);
+            mainPanel.add(new JLabel(String.valueOf(this.resultsArrayList.get(iterator).get(0)), SwingConstants.CENTER));
+            mainPanel.add(new JLabel(String.valueOf(this.resultsArrayList.get(iterator).get(1)), SwingConstants.CENTER));
         }
 
         mainPanel.add(this.exitButton);
@@ -50,10 +50,6 @@ public class ScoreTable extends Window implements MouseListener {
                 }
             }
         }
-    }
-
-    public ArrayList<ArrayList<Object>> getResultsArrayList() {
-        return resultsArrayList;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class ScorePanel extends GamePanel{
         //  Definition of scoreInfo label, which will contain information about player score during one game session
         scoreInfo = new Square();
         scoreInfo.setBounds(playerNameLabel.getWidth() + gameInfo.getWidth(),0,this.width / 5,this.height);
-        scoreInfo.setText("Score: "+Integer.toString(this.score));
+        scoreInfo.setText("Score: "+ this.score);
         scoreInfo.setHorizontalAlignment(LEFT);
         scoreInfo.setBackground(Color.decode("#0b3d61"));
         scoreInfo.setForeground(Color.decode("#d1eeff"));
@@ -53,7 +53,7 @@ public class ScorePanel extends GamePanel{
     // Method addScore is responsible for increasing score variable by 1 every time when Snake "eat" red point
     public void addScore() {
         this.score = this.score + 1;
-        scoreInfo.setText("Score: "+Integer.toString(this.score));
+        scoreInfo.setText("Score: "+ this.score);
     }
 
     public int getScore() {
